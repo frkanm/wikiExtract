@@ -1,7 +1,9 @@
+
 from mw.xml_dump import Iterator
+from mwtextextractor import get_body_text
 import codecs
 import re
-from mwtextextractor import get_body_text
+import sys
 
 #Open wikipedia dump using mw library
 dump = Iterator.from_file(codecs.open("skwiki-20151102-pages-articles.xml", encoding="utf-8"))
@@ -38,42 +40,50 @@ for page in dump:
         articleText = ''
         #Iterate through lines
         for line in splitedLines:
-        	#Filter out empty lines (e.g '')
+            #Filter out empty lines (e.g '')
             if len(line) > 1:
-            	#Filter out lines with listed categories from article text
-                if bool(re.search('\[Kategória\:([^\]]+)\]',line)) == False:
-                	#Filter out remaining mediawiki tags (mostly pictures and their descriptions)
-                    line = re.sub('\[\[([^\]]+)\]\]', '', line)
-                    #Append filtered line into text string
-                    articleText+= line
+                articleText+= line
+        #Filter out remaining mediawiki tags (mostly pictures and their descriptions)
+        #Filter out lines with listed categories from article text
+        articleText = re.sub('\[\[[^\]]+\]\]','', articleText)
         #Define categories Array
         categories=[]
         #Using regex find all categories
         matches = re.findall('\[Kategória\:([^\]]+)\]',textRevision,re.DOTALL)
         #Iterate through matches from regex
         for match in matches:
-        	#Filter out wrong names of categories (some categories contain '|' character)
+            #Filter out wrong names of categories (some categories contain '|' character)
             if (ord(match[len(match)-1])) == 32:
                 match = match[:-2]
                 #Append category into array
                 categories.append(match)
             else:
-            	#Append category into array
+                #Append category into array
                 categories.append(match)
         #Check if article contains any categories
         #If there are no categories for article , we ignore article, otherwise the article is appended into article list
         if len(matches) > 0:
             articleList.append(Article(page.title,articleText,categories))
     #DEBUG: If condition controling number of pages from XML dump to process
-    if pageIterate > stops:
-        break
-    pageIterate+=1
+    #if pageIterate > stops:
+    #    break
+    #pageIterate+=1
 
-#DEBUG: print number of articles and formatted list of articles 
-print(len(articleList))
+#DEBUG: print number of articles and formatted list of articles into console
+# print(len(articleList))
+# for article in articleList:
+#     print(article.title)
+#     print(article.text)
+#     for category in article.categories:
+#         print("Kategória:",category)
+#     print('==========================')
+
+#Print formatted output into file
+text_file = codecs.open("output.txt", "w", "utf-8")
 for article in articleList:
-    print(article.title)
-    print(article.text)
+    text_file.write("%s\n" % article.title)
+    text_file.write("%s\n" % article.text)
     for category in article.categories:
-        print("Kategória:",category)
-    print('==========================')
+        text_file.write("Kategória: %s\n" % category)
+    text_file.write('==========================\n')
+text_file.close()
