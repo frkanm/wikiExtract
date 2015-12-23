@@ -2,8 +2,8 @@
 Wikipedia article&amp;Category extraction
 
 ###Required Libraries
-[WikiExtractor]
-[MediaWiki]
+- [WikiExtractor]
+- [MediaWiki]
 
 
 
