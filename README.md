@@ -2,7 +2,7 @@
 Wikipedia article&amp;Category extraction
 
 ###Required Libraries
-- [WikiExtractor]
+- [mwtextextractor]
 - [MediaWiki]
 
 
@@ -10,5 +10,5 @@ Windows console output: change console coding:
 ```sh
 $ chcp 65001
 ```
-[WikiExtractor]: <https://github.com/attardi/wikiextractor>
+[WikiExtractor]: <https://github.com/danmichaelo/mwtextextractor>
 [MediaWiki]: <http://pythonhosted.org/mediawiki-utilities/index.html>
